@@ -4,6 +4,7 @@ It was implemented by two parts, Server and Client.
 Server is responsible for machine learning tasks. It can be deployed in multiple machines and handle tasks concurrently.
 Client is responsible for receiving and sending message to multiple users, and interacting with Server.
 Telegram bot was chosen as our user interface, which can simply send images.
+
 The core machine learning project is based on a pretrained Age-Gender-Estimation project. Some of its files were modified in this project.
 Details are in Github: https://github.com/yu4u/age-gender-estimation
 
