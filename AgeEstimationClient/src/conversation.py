@@ -20,7 +20,7 @@ def start(bot, update):
     user = update.message.from_user
     logger.info("Start with %s", user.first_name)
     update.message.reply_text(
-        "你好！我是一个傻屌机器人，能猜出你的性别和年龄，请发给我一张你的自拍好么？你还可以和我对话，比如尝试说'你好'。如果不想再搭理我请输入 /cancel")
+        "你好！我是一个机器人，能猜出你的性别和年龄，请发给我一张你的自拍好么？你还可以和我对话，比如尝试说'你好'。如果想结束交谈请输入 /cancel")
 
     return PHOTO
 
@@ -30,7 +30,7 @@ def echo(bot, update):
     msg = update.message.text
     logger.info("Echo of %s: %s", user.first_name, msg)
     if msg == '你好':
-        reply = '你好，我是你爸爸！'
+        reply = '你好，很高兴认识你！'
     elif msg in ['再见', '拜拜', 'bye', '8', '88', '白白']:
         reply = '拜拜！'
         update.message.reply_text(reply)
@@ -48,8 +48,9 @@ def echo(bot, update):
 
 def photo(bot, update):
     user = update.message.from_user
+    chart_id = update.message.chat_id
     photo_file = bot.get_file(update.message.photo[-1].file_id)
-    photo_path = '%s/images/user_photo.jpg' % root_dir
+    photo_path = '%s/images/user_photo_%d.jpg' % (root_dir, chart_id)
     photo_file.download(photo_path)
     logger.info("Photo of %s: %s", user.first_name, photo_path)
     update.message.reply_text('收到了，那我猜你的性别和年龄应该是……')
@@ -64,13 +65,13 @@ def photo(bot, update):
             logger.info("Error of %s, code=%d", user.first_name, response['code'])
             return ConversationHandler.END
         if response['code'] == 1 or response['code'] == 3:
-            update.message.reply_text('我脑子好像瓦特了，我去报告一下，拜拜！')
+            update.message.reply_text('我好像出了什么错误，我去报告一下，拜拜！')
             logger.info("Error of %s, code=%d", user.first_name, response['code'])
             return ConversationHandler.END
 
     # output result
     results = response['results']
-    result_photo_path = '%s/images/result_user_photo.jpg' % root_dir
+    result_photo_path = '%s/images/result_user_photo_%d.jpg' % (root_dir, chart_id)
     gender_map = {'F': '美女', 'M': '帅哥'}
     if len(results) == 0:
         update.message.reply_text('不好意思，我并没有在照片里看到你啊！')
@@ -102,8 +103,12 @@ def error(bot, update, error):
 
 def main():
     token = "775029283:AAHNweyYIs9Zjp27HM3vlJTrK487fPr_fhU"
+    proxy = True
     request_args = {'proxy_url': 'http://127.0.0.1:1087'}
-    updater = Updater(token, request_kwargs=request_args)
+    if proxy:
+        updater = Updater(token, request_kwargs=request_args)
+    else:
+        updater = Updater(token)
     dp = updater.dispatcher
 
     conv_handler = ConversationHandler(
