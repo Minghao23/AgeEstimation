@@ -50,7 +50,19 @@ def photo(bot, update):
     user = update.message.from_user
     chart_id = update.message.chat_id
     photo_file = bot.get_file(update.message.photo[-1].file_id)
-    photo_path = '%s/images/user_photo_%d.jpg' % (root_dir, chart_id)
+
+    # check the No. of photo id
+    photo_No_file = '%s/images/photo_No.json' % root_dir
+    with open(photo_No_file, 'r') as load_f:
+        d = json.load(load_f)
+    number = 0
+    if str(chart_id) in d:
+        number = d[str(chart_id)] + 1
+    d[str(chart_id)] = number
+    with open(photo_No_file, 'w') as dump_f:
+        json.dump(d, dump_f)
+
+    photo_path = '%s/images/user_photo_%d_%d.jpg' % (root_dir, chart_id, number)
     photo_file.download(photo_path)
     logger.info("Photo of %s: %s", user.first_name, photo_path)
     update.message.reply_text('收到了，那我猜你的性别和年龄应该是……')
@@ -71,7 +83,7 @@ def photo(bot, update):
 
     # output result
     results = response['results']
-    result_photo_path = '%s/images/result_user_photo_%d.jpg' % (root_dir, chart_id)
+    result_photo_path = '%s/images/result_user_photo_%d_%d.jpg' % (root_dir, chart_id, number)
     gender_map = {'F': '美女', 'M': '帅哥'}
     if len(results) == 0:
         update.message.reply_text('不好意思，我并没有在照片里看到你啊！')
