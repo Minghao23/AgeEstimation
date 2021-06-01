@@ -31,4 +31,4 @@ tables==3.4.4
 tensorflow==1.0.0
 Theano==1.0.3
 tqdm==4.28.1
-urllib3==1.24.1
+urllib3==1.26.5
