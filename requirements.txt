@@ -4,7 +4,7 @@ cffi==1.11.5
 chardet==3.0.4
 cryptography==2.4.2
 cycler==0.10.0
-Django==2.1.4
+Django==2.2.24
 dlib==19.16.99
 future==0.17.1
 h5py==2.8.0
